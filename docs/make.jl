@@ -12,7 +12,7 @@ makedocs(
         assets=String[],
     ),
     modules = [HypergeoMat],
-    pages = ["Documentation"  => "index.md"]
+    pages = ["Documentation"  => "index.md"],
     repo = "https://github.com/stla/HypergeoMat.jl/blob/{commit}{path}#{line}"
 )
 
