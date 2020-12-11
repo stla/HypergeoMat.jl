@@ -1,0 +1,7 @@
+name = "HypergeoMat"
+uuid = "45a664f0-7593-4733-b76c-60f36ef4c15f"
+authors = ["Stephane Laurent <adresse@mail.fr>"]
+version = "0.1.0"
+
+[targets]
+test = ["Test"]
