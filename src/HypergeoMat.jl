@@ -261,6 +261,9 @@ function lmvgamma(
   z::Union{R,T},
   p::Integer
 ) where {R<:Real,T<:Complex{R}}
+  if real(z) <= 0
+    throw(DomainError(z, "The real part of `z` is not positive."))
+  end
   C = p*(p-1)/4.0 * log(pi)
   isComplex = eltype(z) <: Complex
   if isComplex
@@ -285,6 +288,9 @@ function mvgamma(
   z::Union{R,T},
   p::Integer
 ) where {R<:Real,T<:Complex{R}}
+  if imag(z) == 0 && real(z) <= 0 && trunc(z) == z
+    throw(DomainError(z, "The argument `z` is a non-positive integer."))
+  end
   if real(z) > 0.0
     result = exp(lmvgamma(z, p))
   else
