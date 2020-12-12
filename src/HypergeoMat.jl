@@ -1,8 +1,11 @@
 module HypergeoMat
 
-import LinearAlgebra
-
 export hypergeomPQ
+export lmvgamma
+
+module HypergeomPQ
+
+import LinearAlgebra
 
 function DictParts(m::Integer, n::Integer)
   D = Dict{Int64,Int64}()
@@ -243,5 +246,37 @@ function hypergeomPQ(
   x = LinearAlgebra.eigvals(X)
   return hypergeomPQ(m, a, b, x, alpha)
 end
+
+end # end module HypergeomPQ
+
+module Mvgamma
+
+import GSL
+
+function lmvgamma(
+  z::Union{R,T},
+  p::Integer
+) where {R<:Real,T<:Complex{R}}
+  C = p*(p-1)/4.0 * log(pi)
+  isComplex = eltype(z) <: Complex
+  if isComplex
+    z_re = real(z)
+    z_im = imag(z)
+    (a, b) = GSL.sf_lngamma_complex_e(z_re, z_im)
+    S = complex(a.val, b.val)
+    for i in 2:p
+      (a, b) = GSL.sf_lngamma_complex_e(z_re + (1 - i)/2.0, z_im)
+      S = S + complex(a.val, b.val)
+    end
+  else
+    S = GSL.sf_lngamma(z)
+    for i in 2:p
+      S = S + GSL.sf_lngamma(z + (1 - i)/2.0)
+    end
+  end
+  return C + S
+end
+
+end # end module Mvgamma
 
 end
