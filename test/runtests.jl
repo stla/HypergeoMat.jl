@@ -20,4 +20,13 @@ using Test
       0.7733140719 + 0.3092059749im
     )
   end
+  @testset "Gauss formula" begin
+    a = 1.1
+    b = 2.0im
+    c = 9.0
+    @test isapprox(
+      hypergeomPQ(100, [a; b], [c], [1.0, 1.0, 1.0]),
+      mvgamma(c, 3) * mvgamma(c-a-b, 3) / mvgamma(c-a, 3) / mvgamma(c-b, 3)
+    )
+  end
 end

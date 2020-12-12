@@ -6,6 +6,7 @@ export mvgamma
 
 module HypergeomPQ
 
+export hypergeomPQ
 import LinearAlgebra
 
 function DictParts(m::Integer, n::Integer)
@@ -252,6 +253,8 @@ end # end module HypergeomPQ
 
 module Mvgamma
 
+export lmvgamma
+export mvgamma
 import GSL
 
 function lmvgamma(
@@ -296,5 +299,8 @@ function mvgamma(
 end
 
 end # end module Mvgamma
+
+using .HypergeomPQ
+using .Mvgamma
 
 end
