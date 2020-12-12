@@ -2,6 +2,7 @@ module HypergeoMat
 
 export hypergeomPQ
 export lmvgamma
+export mvgamma
 
 module HypergeomPQ
 
@@ -275,6 +276,23 @@ function lmvgamma(
     end
   end
   return C + S
+end
+
+function mvgamma(
+  z::Union{R,T},
+  p::Integer
+) where {R<:Real,T<:Complex{R}}
+  if real(z) > 0.0
+    result = exp(lmvgamma(z, p))
+  else
+    n = 1 + floor(-real(z))
+    pochhammer = z
+    for i in 2:n
+      pochhammer = pochhammer * (z + i - 1.0)
+    end
+    result = exp(lmvgamma(z + n, p)) / pochhammer
+  end
+  return result
 end
 
 end # end module Mvgamma
