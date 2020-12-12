@@ -266,8 +266,8 @@ end
     hypergeomPQ(m, a, b, X[, alpha])
 
 Compute the truncated hypergeometric function of a matrix argument. The 
-  hypergeometric function is usually defined for a symmetric matrix only, but 
-  arbitrary square matrices are allowed.
+  hypergeometric function is usually defined for a symmetric real matrix only 
+  or a Hermitian complex matrix but arbitrary square matrices are allowed.
 
 # Arguments
 - `m`: truncation weight of the summation, a positive integer
