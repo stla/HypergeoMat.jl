@@ -132,6 +132,19 @@ function hypergeomI(
 end
 
 # ------------------------------------------------------------------------------
+"""
+    hypergeomPQ(m, a, b, x[, alpha])
+
+Compute the truncated hypergeometric function of a matrix argument given the 
+  eigen values of the matrix.
+
+# Arguments
+- `m`: truncation weight of the summation, a positive integer
+- `a`: the "upper" parameters, a real or complex vector, possibly empty
+- `b`: the "lower" parameters, a real or complex vector, possibly empty
+- `x`: real or complex vector, the eigen values
+- `alpha`: the alpha parameter, a positive number; if missing, `alpha=2` is used
+"""
 function hypergeomPQ(
   m::Integer,
   a::Vector{<:Union{R,T}},
@@ -228,6 +241,17 @@ function hypergeomPQ(
 end
 
 # univariate -------------------------------------------------------------------
+"""
+    hypergeomPQ(m, a, b, x)
+
+Compute the truncated hypergeometric function of a scalar argument.
+
+# Arguments
+- `m`: truncation weight of the summation, a positive integer
+- `a`: the "upper" parameters, a real or complex vector, possibly empty
+- `b`: the "lower" parameters, a real or complex vector, possibly empty
+- `x`: scalar, real or complex
+"""
 function hypergeomPQ(
   m::Integer,
   a::Vector{<:Union{R,T}},
@@ -238,6 +262,20 @@ function hypergeomPQ(
 end
 
 # matrix argument --------------------------------------------------------------
+"""
+    hypergeomPQ(m, a, b, X[, alpha])
+
+Compute the truncated hypergeometric function of a matrix argument. The 
+  hypergeometric function is usually defined for a symmetric matrix only, but 
+  arbitrary square matrices are allowed.
+
+# Arguments
+- `m`: truncation weight of the summation, a positive integer
+- `a`: the "upper" parameters, a real or complex vector, possibly empty
+- `b`: the "lower" parameters, a real or complex vector, possibly empty
+- `X`: a square matrix, real or complex
+- `alpha`: the alpha parameter, a positive number; if missing, `alpha=2` is used
+"""
 function hypergeomPQ(
   m::Integer,
   a::Vector{<:Union{R,T}},
@@ -257,6 +295,15 @@ export lmvgamma
 export mvgamma
 import GSL
 
+"""
+    lmvgamma(z, p)
+
+Compute the logarithm of the multivariate Gamma function.
+
+# Arguments
+- `z`: real or complex number
+- `p`: positive integer, the dimension
+"""
 function lmvgamma(
   z::Union{R,T},
   p::Integer
@@ -284,6 +331,15 @@ function lmvgamma(
   return C + S
 end
 
+"""
+    mvgamma(z, p)
+
+Compute the multivariate Gamma function.
+
+# Arguments
+- `z`: real or complex number
+- `p`: positive integer, the dimension
+"""
 function mvgamma(
   z::Union{R,T},
   p::Integer
