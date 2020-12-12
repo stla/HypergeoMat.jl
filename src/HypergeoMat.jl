@@ -266,7 +266,7 @@ end
     hypergeomPQ(m, a, b, X[, alpha])
 
 Compute the truncated hypergeometric function of a matrix argument. The 
-  hypergeometric function is usually defined for a symmetric real matrix only 
+  hypergeometric function is usually defined for a symmetric real matrix  
   or a Hermitian complex matrix but arbitrary square matrices are allowed.
 
 # Arguments
@@ -285,6 +285,54 @@ function hypergeomPQ(
 ) where {R<:Real,T<:Complex{R}}
   x = LinearAlgebra.eigvals(X)
   return hypergeomPQ(m, a, b, x, alpha)
+end
+
+# Bessel -----------------------------------------------------------------------
+"""
+    BesselA(m, X, nu)
+
+Compute the truncated Herz's type one Bessel function of a matrix argument. It  
+  is usually defined for a symmetric real matrix or a Hermitian complex matrix 
+  but arbitrary square matrices are allowed.
+
+# Arguments
+- `m`: truncation weight of the hypergeometric function, a positive integer
+- `X`: a square matrix, real or complex
+- `nu`: the order parameter, real or complex number with `real(nu)>-1`
+"""
+function BesselA(
+  m::Integer,
+  X::Matrix{<:Union{R,T}},
+  nu::Union{R,T}
+) where {R<:Real,T<:Complex{R}}
+  if real(nu) <= -1
+    throw(DomainError(nu, "The real part of `nu` is smaller than -1."))
+  end
+  b = nu + (size(X)[1]+1) / 2.0
+  return hypergeomPQ(m, Float64[], [b], -X, 2) / mvgamma(b, p)
+end
+
+"""
+    BesselA(m, x, nu)
+
+Compute the truncated Herz's type one Bessel function of a matrix argument 
+  given the eigen values of the matrix. 
+
+# Arguments
+- `m`: truncation weight of the hypergeometric function, a positive integer
+- `x`: the eigen values, a vector of real or complex numbers
+- `nu`: the order parameter, real or complex number with `real(nu)>-1`
+"""
+function BesselA(
+  m::Integer,
+  x::Vector{<:Union{R,T}},
+  nu::Union{R,T}
+) where {R<:Real,T<:Complex{R}}
+  if real(nu) <= -1
+    throw(DomainError(nu, "The real part of `nu` is smaller than -1."))
+  end
+  b = nu + (length(x)+1) / 2.0
+  return hypergeomPQ(m, Float64[], [b], -x, 2) / mvgamma(b, p)
 end
 
 end # end module HypergeomPQ
