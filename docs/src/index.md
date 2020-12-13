@@ -87,7 +87,7 @@ For example, to compute
 
 you have to enter (recall that ``\alpha=2`` is the default value)
 
-```@repl
+```julia
 hypergeomPQ(15, [3.0;4.0], [5.0;6.0;7.0], [0.1 0.4; 0.4 0.1])
 ```
 
