@@ -87,7 +87,7 @@ For example, to compute
 
 you have to enter (recall that ``\alpha=2`` is the default value)
 
-```
+```@repl
 hypergeomPQ(15, [3.0;4.0], [5.0;6.0;7.0], [0.1 0.4; 0.4 0.1])
 ```
 
@@ -99,15 +99,11 @@ or complex square matrix, or a real or complex vector of eigen values.
 
 ## References 
 
-- Plamen Koev and Alan Edelman. 
-*The Efficient Evaluation of the Hypergeometric Function of a Matrix Argument*.  Mathematics of Computation, 75, 833-846, 2006.
+- Plamen Koev and Alan Edelman. *The Efficient Evaluation of the Hypergeometric Function of a Matrix Argument*. Mathematics of Computation, 75, 833-846, 2006.
 
-- Robb Muirhead. 
-*Aspects of multivariate statistical theory*. Wiley series in probability and mathematical statistics. Probability and mathematical statistics. 
-John Wiley & Sons, New York, 1982.
+- Robb Muirhead. *Aspects of multivariate statistical theory*. Wiley series in probability and mathematical statistics. Probability and mathematical statistics. John Wiley & Sons, New York, 1982.
 
-- A. K. Gupta and D. K. Nagar. *Matrix variate distributions*. 
-Chapman and Hall, 1999.
+- A. K. Gupta and D. K. Nagar. *Matrix variate distributions*. Chapman and Hall, 1999.
 
 
 ## Member functions
