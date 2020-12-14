@@ -52,7 +52,7 @@ In random matrix theory, the hypergeometric function appears for ``\alpha=2``
 and ``\alpha`` is omitted from the notation, implicitely assumed to be ``2``. 
 This is the default value of ``\alpha`` in the `HypergeoMat` package. 
 
-Koev and Eldeman (2006) provided an efficient algorithm for the evaluation 
+Koev and Edelman (2006) provided an efficient algorithm for the evaluation 
 of the truncated series 
 
 ```math
