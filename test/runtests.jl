@@ -62,3 +62,15 @@ end
     )
   end
 end
+
+@testset "Hypergeo3F2: Kummer relation" begin
+  a = [1.0; 2.0; 3.0]
+  b = [9.0; 10.0]
+  c = sum(b) - sum(a)
+  p = 4
+  K = mvgamma(b[2],p) * mvgamma(c,p) / mvgamma(b[2]-a[3],p) / mvgamma(c+a[3],p)
+  o1 = K * 
+    hypergeomPQ(100, [b[1]-a[1]; b[1]-a[2]; a[3]], [b[1]; c+a[3]], [1.0; 1.0; 1.0; 1.0])
+  o2 = hypergeomPQ(15, a, b, [1.0; 1.0; 1.0; 1.0])
+  @test isapprox(o1, o2, rtol = 1e-3)
+end
