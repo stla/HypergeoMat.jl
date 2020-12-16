@@ -43,14 +43,13 @@ function _N(dico::Dict{I,I}, lambda::Vector{I}) where {I<:Integer}
 end
 
 function _T(
-  alpha::R,
-  a::Vector{<:Union{R,Complex{R}}},
-  b::Vector{<:Union{R,Complex{R}}},
-  kappa::Vector{<:Integer},
-) where {R<:Real}
-  isComplex = eltype(a) <: Complex || eltype(b) <: Complex
+  alpha::Real,
+  a::Vector{<:Number},
+  b::Vector{<:Number},
+  kappa::Vector{<:Integer}
+) 
   if isempty(kappa) || kappa[1] == 0
-    return isComplex ? Complex(R(1)) : R(1)
+    return 1
   end
   i = lastindex(kappa)
   @inbounds c = kappa[i] - 1 - (i - 1) / alpha
@@ -67,7 +66,7 @@ function _T(
   prod3 = prod((g .- alpha) .* e ./ (g .* (e .+ alpha)))
   prod4 = prod((l - f) ./ (l + h))
   out = prod1 / prod2 * prod3 * prod4
-  return isinf(out) || isnan(out) ? (isComplex ? Complex(R(0)) : R(0)) : out
+  return isinf(out) || isnan(out) ? 0 : out
 end
 
 function betaratio(
@@ -91,7 +90,7 @@ end
 function dualPartition(lambda::Vector{T}) where {T<:Integer}
   out = T[]
   if !isempty(lambda)
-    @inbounds for i = 1:lambda[1]
+    @inbounds for i in 1:lambda[1]
       push!(out, count(>=(i), lambda))
     end
   end
@@ -101,19 +100,19 @@ end
 # ------------------------------------------------------------------------------
 function hypergeomI(
   m::I,
-  alpha::R,
-  a::Vector{<:Union{R,Complex{R}}},
-  b::Vector{<:Union{R,Complex{R}}},
+  alpha::Real,
+  a::Vector{<:Number},
+  b::Vector{<:Number},
   n::I,
-  x::Union{R,Complex{R}},
-)::Union{R,Complex{R}} where {I<:Integer,R<:Real}
+  x::Number,
+)::Number where {I<:Integer}
   function summation(
     i::Int64,
-    z::T,
+    z::Number,
     j::I,
     kappa::Vector{I},
-  ) where {R<:Real,T<:Union{R,Complex{R}}}
-    function go(kappai::I, zz::T, s::T) where {R<:Real,T<:Union{R,Complex{R}}}
+  ) 
+    function go(kappai::I, zz::Number, s::Number)
       @inbounds if i == 0 && kappai > j || i > 0 && kappai > min(kappa[i], j)
         return s
       else
@@ -125,11 +124,9 @@ function hypergeomI(
         go(kappai + 1, zp, spp)
       end
     end # end go ---------------------------------------------------------------
-    go(I(1), z, T(0))
+    go(I(1), z, 0)
   end # end summation ----------------------------------------------------------
-  isComplex = eltype(a) <: Complex || eltype(b) <: Complex || eltype(x) <: Complex
-  the_one = isComplex ? Complex(R(1)) : R(1)
-  return the_one + summation(0, the_one, m, I[])
+  return 1 + summation(0, 1, m, I[])
 end
 
 # ------------------------------------------------------------------------------
@@ -148,13 +145,13 @@ Compute the truncated hypergeometric function of a matrix argument given the
 """
 function hypergeomPQ(
   m::Integer,
-  a::Vector{<:Union{R,T}},
-  b::Vector{<:Union{R,T}},
-  x::Vector{<:Union{R,T}},
-  alpha::Union{Nothing,R} = nothing,
-) where {R<:Real,T<:Complex{R}}
+  a::Vector{<:Number},
+  b::Vector{<:Number},
+  x::Vector{<:Number},
+  alpha::Union{Nothing,Real} = nothing,
+) 
   if isnothing(alpha)
-    alpha = R(2)
+    alpha = 2
   end
   n = length(x)
   @inbounds if all(x .== x[1])
@@ -162,11 +159,11 @@ function hypergeomPQ(
   end
   function jack(
     k::I,
-    beta::Union{R,Complex{R}},
+    beta::Number,
     c::I,
-    t::Integer,
+    t::I,
     mu::Vector{I},
-    jarray::Array{<:Union{R,Complex{R}},2},
+    jarray::Array{<:Number,2},
     kappa::Vector{I},
     nkappa::I,
   ) where {I<:Integer}
@@ -203,12 +200,12 @@ function hypergeomPQ(
   end # end jack ---------------------------------------------------------------
   function summation(
     i::I,
-    z::T,
+    z::Number,
     j::I,
     kappa::Vector{I},
-    jarray::Array{T,2},
-  ) where {I<:Integer,R<:Real,T<:Union{R,Complex{R}}}
-    function go(kappai::I, zp::T, s::T)
+    jarray::Array{<:Number,2},
+  ) where {I<:Integer}
+    function go(kappai::I, zp::Number, s::Number)
       if i == n || i == 0 && kappai > j || i > 0 && kappai > min(last(kappa), j)
         return s
       end
@@ -219,8 +216,8 @@ function hypergeomPQ(
         @inbounds jarray[nkappa, 1] =
           x[1] * (1 + alpha * (kappap[1] - 1)) * jarray[nkappa-1, 1]
       end
-      for t = 2:n
-        jarray = jack(I(0), T(1), I(0), t, kappap, jarray, kappap, nkappa)
+      for t in 2:n
+        jarray = jack(I(0), 1, I(0), t, kappap, jarray, kappap, nkappa)
       end
       @inbounds sp = s + zpp * jarray[nkappa, n]
       if j > kappai && i <= n
@@ -230,15 +227,13 @@ function hypergeomPQ(
         go(kappai + 1, zpp, sp)
       end
     end # end go ---------------------------------------------------------------
-    go(I(1), T(z), T(0))
+    go(I(1), z, 0)
   end # end summation ----------------------------------------------------------
-  the_one =
-    eltype(a) <: Complex || eltype(b) <: Complex || eltype(x) <: Complex ? Complex(R(1)) :
-    R(1)
   (dico, Pmn) = DictParts(m, n)
-  J = zeros(typeof(the_one), Pmn, n)
+  T = typeof(x[1])
+  J = zeros(T, Pmn, n)
   @inbounds J[1, :] = cumsum(x)
-  return the_one + summation(0, the_one, m, Int64[], J)
+  return 1 + summation(0, T(1), m, Int64[], J)
 end
 
 # univariate -------------------------------------------------------------------
@@ -255,11 +250,11 @@ Compute the truncated hypergeometric function of a scalar argument.
 """
 function hypergeomPQ(
   m::Integer,
-  a::Vector{<:Union{R,T}},
-  b::Vector{<:Union{R,T}},
-  x::Union{R,T},
-) where {R<:Real,T<:Complex{R}}
-  return hypergeomI(m, R(2), a, b, 1, x)
+  a::Vector{<:Number},
+  b::Vector{<:Number},
+  x::Number
+) 
+  return hypergeomI(m, 2, a, b, 1, x)
 end
 
 # matrix argument --------------------------------------------------------------
@@ -279,11 +274,11 @@ Compute the truncated hypergeometric function of a matrix argument. The
 """
 function hypergeomPQ(
   m::Integer,
-  a::Vector{<:Union{R,T}},
-  b::Vector{<:Union{R,T}},
-  X::Matrix{<:Union{R,T}},
-  alpha::Union{Nothing,R} = nothing,
-) where {R<:Real,T<:Complex{R}}
+  a::Vector{<:Number},
+  b::Vector{<:Number},
+  X::Matrix{<:Number},
+  alpha::Union{Nothing,Real} = nothing
+) 
   x = LinearAlgebra.eigvals(X)
   return hypergeomPQ(m, a, b, x, alpha)
 end
@@ -381,15 +376,15 @@ Compute the truncated Herz's type one Bessel function of a matrix argument. It
 """
 function BesselA(
   m::Integer,
-  X::Matrix{<:Union{R,T}},
-  nu::Union{R,T}
-) where {R<:Real,T<:Complex{R}}
+  X::Matrix{Number},
+  nu::Number
+) 
   if real(nu) <= -1
     throw(DomainError(nu, "The real part of `nu` is smaller than -1."))
   end
   p = size(X)[1]
-  b = nu + (p+1) / 2.0
-  return hypergeomPQ(m, Float64[], [b], -X, 2.0) / mvgamma(b, p)
+  b = nu + (p+1) / 2
+  return hypergeomPQ(m, Int64[], [b], -X, 2) / mvgamma(b, p)
 end
 
 """
@@ -405,15 +400,15 @@ Compute the truncated Herz's type one Bessel function of a matrix argument
 """
 function BesselA(
   m::Integer,
-  x::Vector{<:Union{R,T}},
-  nu::Union{R,T}
-) where {R<:Real,T<:Complex{R}}
+  x::Vector{<:Number},
+  nu::Number
+) 
   if real(nu) <= -1
     throw(DomainError(nu, "The real part of `nu` is smaller than -1."))
   end
   p = length(x)
-  b = nu + (p+1) / 2.0
-  return hypergeomPQ(m, Float64[], [b], -x, 2.0) / mvgamma(b, p)
+  b = nu + (p+1) / 2
+  return hypergeomPQ(m, Int64[], [b], -x, 2) / mvgamma(b, p)
 end
 
 using ..HypergeomPQ
