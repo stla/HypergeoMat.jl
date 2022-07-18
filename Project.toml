@@ -8,6 +8,7 @@ GSL = "92c85e6c-cbff-5e0c-80f7-495c94daaecd"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [compat]
+GSL = "1.0.0"
 julia = "1"
 
 [extras]
